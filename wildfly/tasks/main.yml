@@ -1,6 +1,10 @@
 ---
 # tasks file for wildfly
 
+- name: Check that Java is present
+  yum:
+    name: "{{ java_version }}"
+    state: present
 - name: Add a System user that runs the wildfly process
   user:
     name: "{{ system_user }}"
@@ -31,11 +35,6 @@
 - name: reload daemon
   systemd:
     daemon_reload: yes
-
-- name: Check that Java is present
-  yum:
-    name: "{{ java_version }}"
-    state: present
 
 - name: copy the xml config
   template:
