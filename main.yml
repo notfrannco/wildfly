@@ -1,0 +1,8 @@
+---
+- name: Install wildfly
+  hosts: all
+  become: true
+  vars:
+    pkg_location: "files/"
+  roles:
+    - wildfly

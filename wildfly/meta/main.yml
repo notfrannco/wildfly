@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Javier Franco
+  description: Instalador de Wildfly
+  company: Datasystems
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: CentOS
+    versions:
+    - 8
+  - name: RHEL 
+    versions:
+    - 8
+
+  galaxy_tags:
+    - web
+    - system
+    - application_server
