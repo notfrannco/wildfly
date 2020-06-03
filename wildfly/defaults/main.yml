@@ -7,18 +7,14 @@ service_name: "wildfly"
 wildfly_admin_user: "admin"
 wildfly_admin_pass: "admin"
 wildfly_home: "/opt/wildfly-19.1.0.Final/"
-wildfly_host_config: "standalone.xml"
+wildfly_host_config: "standalone-ha.xml"
 wildfly_mode: "standalone"
 java_version: "java-11-openjdk"
 wildfly_firewall:
   - {port: '9990/tcp', state: 'enabled'}
   - {port: '8080/tcp', state: 'enabled'}
-  #- {port: '8180/tcp', state: 'enabled'}
-  #- {port: '5601/tcp', state: 'enabled'}
-  #- {port: '40918/tcp', state: 'enabled'}
-  #- {port: '8109/tcp', state: 'enabled'}
-  #- {port: '8009/tcp', state: 'enabled'}
-  #- {port: '8543/tcp', state: 'enabled'}
-  #- {port: '8443/tcp', state: 'enabled'}
-  #- {port: '43161/tcp', state: 'enabled'}
-  #- {port: '55200/tcp', state: 'enabled'}
+  - {port: '8443/tcp', state: 'enabled'}
+  - {port: '8009/tcp', state: 'enabled'} # ajp
+  - {port: '55200/udp', state: 'enabled'} # jgroups
+  - {port: '45688/udp', state: 'enabled'} # jgroups multicast address
+  - {port: '23364/udp', state: 'enabled'} # mod_cluster

@@ -21,10 +21,11 @@
 
 ## Configuration for standalone mode
 # JBOSS_CONFIG=standalone.xml
+ JBOSS_CONFIG={{ wildfly_host_config | default('standlone.xml')}}
 
 ## Configuration for domain mode
 # JBOSS_DOMAIN_CONFIG=domain.xml
- JBOSS_HOST_CONFIG={{ wildfly_host_config | default('standlone.xml')}}
+# JBOSS_HOST_CONFIG=host-slave.xml
 
 ## The amount of time to wait for startup
 # STARTUP_WAIT=60
