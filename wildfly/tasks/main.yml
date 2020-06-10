@@ -18,6 +18,7 @@
     owner: "{{ system_user }}"
     group: "{{ system_user }}"
     creates: "{{ install_location }}{{ wildfly_zip[:-4] }}/"
+    
 
 - name: Copy the init script to /etc/init.d/
   copy:
@@ -63,6 +64,33 @@
   loop: "{{ wildfly_firewall }}"
   tags:
     - firewall
+
+    ##### datasources configs
+- name: copy the jboss cli scripts
+  template:
+    src: templates/{{ item }}
+    dest: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  loop:
+    - add_datasource_driver.cli
+    - add_module.cli
+
+- name: copy the jdbc oracle dirver
+  copy:
+    src: files/ojdbc6.jar
+    dest: "{{ wildfly_home }}"
+
+- name: Add jdbc driver as a module
+  shell: './jboss-cli.sh --file="add_module.cli"'
+  args:
+      chdir: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  ignore_errors: yes
+
+- name: define the driver
+  shell: "./jboss-cli.sh -c --controller={{ ansible_facts.default_ipv4.address}} --file=add_datasource_driver.cli" 
+  args:
+      chdir: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  ignore_errors: yes
+
 
 - name: Start Wildfly
   service:

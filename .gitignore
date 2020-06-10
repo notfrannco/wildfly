@@ -1,2 +1,5 @@
 wildfly/files/*
 notes
+ojdbc6.jar
+datasource
+files/*

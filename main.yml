@@ -1,6 +1,7 @@
 ---
 - name: Install wildfly
   hosts: all
+  serial: 1
   become: true
   vars:
     pkg_location: "files/"

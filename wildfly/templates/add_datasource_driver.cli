@@ -1,0 +1,1 @@
+/subsystem=datasources/jdbc-driver=oracle:add(driver-module-name=com.oracle, driver-name=oracle)
