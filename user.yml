@@ -1,0 +1,26 @@
+---
+- name: Users creation
+  hosts: all
+  become: true
+  vars:
+    usuarios:
+      - nombre: "jose"
+        password: "{{ 'test3' | password_hash('sha512') }}"
+        update_pass: "on_create" # si se quiere modificar la contrasena usar "always"
+        state: "present"
+
+      - nombre: "javier"
+        password: "{{ 'test2' | password_hash('sha512') }}"
+        update_pass: "on_create" # si se quiere modificar la contrasena usar "always"
+        state: "present"
+
+  tasks:
+    - name: add users
+      user:
+        name: "{{ item.nombre }}"
+        shell: "{{ item.shell | default('/bin/bash') }}"
+        state: "{{ item.state }}"
+        password: "{{ item.password }}"
+        update_password: "{{ item.update_pass }}"
+        groups: "{{ item.groups | default(omit)}}"
+      loop: "{{ usuarios }}"

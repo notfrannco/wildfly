@@ -37,6 +37,11 @@
   systemd:
     daemon_reload: yes
 
+- name: copy the xml config
+  template:
+    src: templates/{{ wildfly_host_config }}
+    dest: "{{ wildfly_home }}{{ wildfly_mode }}/configuration/"
+  notify: restart wildfly
 
 - name: copy the wildfly config to /etc/default/
   template:
@@ -61,28 +66,30 @@
     - firewall
 
     ##### datasources configs
-- name: copy the driver config xml config
-  copy:
-    src: templates/{{ item.name }}
-    dest: "{{ wildfly_home }}/{{ item.location }}"
-    owner: "{{ system_user }}"
-    group: "{{ system_user }}"
-    mode: '0644'
-  notify: restart wildfly
+- name: copy the jboss cli scripts
+  template:
+    src: templates/{{ item }}
+    dest: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
   loop:
-    - { name: "module.xml", location: "modules/com/oracle/main/"}
+    - add_datasource_driver.cli
+    - add_module.cli
 
-- name: copy the driver config xml config
+- name: copy the jdbc oracle dirver
   copy:
-    src: templates/{{ item.name }}
-    dest: "{{ wildfly_home }}/{{ item.location }}"
-    owner: "{{ system_user }}"
-    group: "{{ system_user }}"
-    mode: '0644'
-  notify: restart wildfly
-  loop:
-    - { name: "ojdbc6.jar", location: "modules/com/oracle/main/"}
+    src: files/ojdbc6.jar
+    dest: "{{ wildfly_home }}"
 
+- name: Add jdbc driver as a module
+  shell: './jboss-cli.sh --file="add_module.cli"'
+  args:
+      chdir: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  ignore_errors: yes
+
+- name: define the driver
+  shell: "./jboss-cli.sh -c --controller={{ ansible_facts.default_ipv4.address}} --file=add_datasource_driver.cli" 
+  args:
+      chdir: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  ignore_errors: yes
 
 
 - name: Start Wildfly
