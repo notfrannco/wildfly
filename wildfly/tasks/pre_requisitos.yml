@@ -1,0 +1,24 @@
+---
+# tasks file for wildfly
+
+#- name: Check that Java is present
+#  yum:
+#    name: "{{ java_version }}"
+#    state: present
+- name: install pip lxml package for editing xml files
+  pip:
+    name: lxml
+
+- name: Add a System user that runs the wildfly process
+  user:
+    name: "{{ system_user }}"
+    state: present
+    system: yes
+
+- name: Copy the zip file to the remote server and unzip 
+  unarchive:
+    src: "{{ pkg_location | default('files') }}/{{ wildfly_zip }}"
+    dest: "{{ install_location }}"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    creates: "{{ install_location }}{{ wildfly_zip[:-4] }}/"

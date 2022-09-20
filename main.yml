@@ -3,7 +3,20 @@
   hosts: all
   serial: 1
   become: true
-  vars:
-    pkg_location: "files/"
+  #vars:
+  #  pkg_location: "files/"
   roles:
-    - wildfly
+    - role: wildfly
+      vars:
+        pkg_location: "/home/jfranco/data/cu/wildfly/resources/"
+        wildfly_zip: "wildfly-26.1.2.Final.zip"
+        java_zip: "openjdk-14.0.2_linux-x64_bin.tar.gz"
+        system_user: "wildfly"
+        install_location: "/opt/"
+        service_name: "wildfly"
+        wildfly_admin_user: "admin"
+        wildfly_admin_pass: "admin"
+        wildfly_home: "/opt/wildfly-26.1.2.Final/"
+        wildfly_service_script: "wildfly-init-redhat.sh"
+        wildfly_service_conf: "wildfly.conf"
+        java_version: "java-11-openjdk"

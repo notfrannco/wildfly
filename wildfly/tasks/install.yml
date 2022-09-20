@@ -1,0 +1,49 @@
+---
+# tasks file for wildfly
+#
+- name: Add wildfly admin user
+  shell: "./add-user.sh -u {{ wildfly_admin_user }} -p {{ wildfly_admin_pass }} "
+  args:
+    chdir: "{{ install_location }}{{ wildfly_zip[:-4] }}/bin/"
+  ignore_errors: yes
+
+- name: Copy the init script to /etc/init.d/
+  copy:
+    src: "{{ install_location }}{{ wildfly_zip[:-4] }}/docs/contrib/scripts/init.d/{{ wildfly_service_script }}"
+    dest: /etc/init.d/{{ service_name }}
+    mode: 0755
+    remote_src: yes
+
+- name: reload daemon
+  systemd:
+    daemon_reload: yes
+
+- name: copy the wildfly config to /etc/default/
+  template:
+    src: templates/{{ wildfly_service_conf }}
+    dest: /etc/default/wildfly
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+
+- name: configure wildfly interfaces
+  xml:
+    path: "{{ wildfly_home }}/{{ wildfly_mode }}/configuration/{{ wildfly_host_config }}"
+    xpath: "{{ item.xpath }}"
+    attribute: value
+    value: "{{ item.value }}"
+    namespaces:
+      x: "{{ xml_namespace }}"
+      attribute: value
+      value: "{{ item.value }}"
+  loop:
+    - { xpath: "/x:{{ xml_root }}/x:interfaces/x:interface[@name='management']/x:inet-address", value: "${jboss.bind.address.management:{{ ansible_facts.default_ipv4.address}}}"}
+    - { xpath: "/x:{{ xml_root }}/x:interfaces/x:interface[@name='public']/x:inet-address", value: "${jboss.bind.address:{{ ansible_facts.default_ipv4.address }}}"}
+    - { xpath: "/x:{{ xml_root }}/x:interfaces/x:interface[@name='private']/x:inet-address", value: "${jboss.bind.address:{{ ansible_facts.default_ipv4.address }}}"}
+  #notify: restart jboss
+  tags:
+    - configure_jboss_interfaces
+
+- name: Start Wildfly
+  service:
+    name: "{{ service_name }}"
+    state: started

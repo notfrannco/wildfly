@@ -1,0 +1,19 @@
+---
+# tasks file for wildfly
+
+- name: Check firewall is up
+  service:
+    name: firewalld
+    state: started 
+  tags:
+    - firewall
+
+- name: Configure firewall
+  firewalld:
+    port: "{{ item.port }}"
+    permanent: yes
+    immediate: yes
+    state: "{{ item.state }}"
+  loop: "{{ wildfly_firewall }}"
+  tags:
+    - firewall

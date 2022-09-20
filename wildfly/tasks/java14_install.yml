@@ -1,0 +1,13 @@
+---
+- name: copy java tar file
+  unarchive:
+    src: "{{ pkg_location }}/{{ java_zip }}"
+    dest: "/opt/"
+    creates: "/opt/jdk-14.0.2"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+
+- name: add bin path to env
+  template:
+    src: templates/jdk14.sh
+    dest: /etc/profile.d/

@@ -1,11 +1,12 @@
 [all]
 #nodo1
 #nodo2
-nodo3
+#nodo3
+jbslab
 
-[master]
+#[master]
 #nodo1
 
-[slaves]
+#[slaves]
 #nodo2
-nodo3
+#nodo3
