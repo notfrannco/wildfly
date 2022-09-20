@@ -1,0 +1,41 @@
+---
+- name: Create modules directory structure
+  file:
+    path: "{{ wildfly_home }}{{ item.location }}"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+  loop: "{{ wildfly_jdbc_module }}"
+  tags:
+    - create_module_structure
+    - jdbc_driver_config_yml
+
+- name: copy the driver config xml config
+  template:
+    src: templates/{{ item.file }}
+    dest: "{{ wildfly_home }}/{{ item.location }}{{ item.name }}"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0644'
+  notify: restart wildfly
+  loop: "{{ wildfly_jdbc_module }}"
+  tags:
+    - copy_jdbc_driver_config
+    - jdbc_driver_config_yml
+
+- name: copy the driver jar file
+  copy:
+    src: "{{ pkg_location }}/{{ item.name }}"
+    dest: "{{ wildfly_home }}/{{ item.location }}"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+  loop: "{{ wildfly_jdbc_drivers }}"
+
+- name: copy the standalone xml config
+  template:
+    src: templates/{{ wildfly_host_config }}
+    dest: "{{ wildfly_home }}/{{ wildfly_mode }}/configuration/{{ wildfly_host_config }}"
+  #notify: restart wildfly
+  tags:
+      - configure_jboss_jdbc
+

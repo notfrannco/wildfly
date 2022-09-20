@@ -23,3 +23,14 @@ wildfly_firewall:
   - {port: '55200/udp', state: 'enabled'} # jgroups
   - {port: '45688/udp', state: 'enabled'} # jgroups multicast address
   - {port: '23364/udp', state: 'enabled'} # mod_cluster
+
+
+# jdbc jars
+oracle_jar: "ojdbc6.jar"
+
+# jdbc drivers
+wildfly_jdbc_drivers:
+  - {name: "{{ oracle_jar }}", location: "modules/com/oracle/main/"}
+
+wildfly_jdbc_module:
+  - {file: "oracle_module.xml", location: "modules/com/oracle/main/", name: "module.xml"}

@@ -3,8 +3,6 @@
   hosts: all
   serial: 1
   become: true
-  #vars:
-  #  pkg_location: "files/"
   roles:
     - role: wildfly
       vars:
@@ -19,4 +17,5 @@
         wildfly_home: "/opt/wildfly-26.1.2.Final/"
         wildfly_service_script: "wildfly-init-redhat.sh"
         wildfly_service_conf: "wildfly.conf"
+        wildfly_host_config: "standalone.xml"
         java_version: "java-11-openjdk"

@@ -11,3 +11,8 @@
   template:
     src: templates/jdk14.sh
     dest: /etc/profile.d/
+
+- name: source the new configs
+  shell: "source /etc/profile.d/jdk14.sh"
+  ignore_errors: yes
+  changed_when: false

@@ -1,10 +1,6 @@
 ---
 # tasks file for wildfly
 
-#- name: Check that Java is present
-#  yum:
-#    name: "{{ java_version }}"
-#    state: present
 - name: install pip lxml package for editing xml files
   pip:
     name: lxml
